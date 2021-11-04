@@ -2,7 +2,10 @@ package mobilabRobot;
 
 import robocode.*;
 import java.awt.Color;
-
+import robocode.HitByBulletEvent;
+import robocode.HitRobotEvent;
+import robocode.Robot;
+import robocode.ScannedRobotEvent;
 // API help : https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
 
 /**
@@ -11,16 +14,17 @@ import java.awt.Color;
 public class Lucky13 extends AdvancedRobot {
 
 	int enemy_robots; // Number of other robots in the game
-	static int corner = 0; // 0,1,2,3
-	double gun_turn_deg = 13;
-	int cnt_gun_turns;
-	String target_name = "";
+	int drive_distance_after_hit = 70;
+	//static int corner = 0; // 0,1,2,3
+	//double gun_turn_deg = 13;
+//	int cnt_gun_turns;
+	//String target_name = "";
 	/**
 	 * run: Lucky13's default behavior
 	 */
 	public void run() {
 
-		setColors(Color.blue,Color.red,Color.blue); // body,gun,radar
+		setColors(Color.red,Color.red,Color.red); // body,gun,radar
 		// Robot main loop
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
@@ -54,14 +58,15 @@ public class Lucky13 extends AdvancedRobot {
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		// Replace the next line with any behavior you would like
-		if(e.getDistance() < 50)
-			fire(2);
-		else if(e.getDistance() < 100)
+	
+		if(e.getDistance() < 50 && getEnergy() > 50)	// close robot
+			fire(3);
+		else if(e.getDistance() < 100 && getOthers() > 6 && getEnergy() > 20)	// lot of targets
 			fire(1.5);
 		else
 			fire(1);
-	
+			
+		scan();//scan after stop moving.
 	}
 
 	/**
@@ -69,9 +74,15 @@ public class Lucky13 extends AdvancedRobot {
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		// Replace the next line with any behavior you would like
-		turnRight(45);
-		setBack(100);
 		
+		//get the bearing of the bullet for counter attack
+		//turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
+		//move forward
+		ahead(dist);
+		//next move back
+		dist *= -1;
+		
+		scan();
 	}
 	
 	/**
@@ -85,11 +96,18 @@ public class Lucky13 extends AdvancedRobot {
 		//move away from x/y point
 	}	
 	
-	public void onHitRobot(HitRobotEvent event) {
-       if (event.getBearing() > -90 && event.getBearing() <= 90) {
-           back(100);
+	public void onHitRobot(HitRobotEvent e) {
+		//ram and fire hard
+		double turn_gun_deg = (e.getBearing() + getHeading() - getGunHeading())%360;
+
+		turnGunRight(turn_gun_deg);
+		fire(3);
+		
+       if (e.getBearing() > -90 && e.getBearing() <= 90) {
+           back(50);
        } else {
            ahead(100);
        }
+	   
    }
 }
