@@ -2,9 +2,6 @@ package mobilabRobot;
 
 import robocode.*;
 
-/**
- * Lucky13 - a robot by (your name here)
- */
 public class Lucky13 extends AdvancedRobot  {
 	double space = 42;
 	/**
@@ -24,15 +21,20 @@ public class Lucky13 extends AdvancedRobot  {
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 	
-	double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
-	setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
-		
+		double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
+		setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
+			
+		if(e.getEnergy() < 16 && e.getDistance() < 150) {
+			fire(3);
+			return;
+		}
+	
 		if(e.getDistance() < 50 && getEnergy() > 25)	// close robot
 			fire(3);
 		else if(e.getDistance() < 150)	// lot of targets
-			fire(2);
-		else
 			fire(1.5);
+		else
+			fire(1);
 			
 		scan();//scan after stop moving.
 	}
