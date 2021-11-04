@@ -1,6 +1,7 @@
 package mobilabRobot;
+
 import robocode.*;
-//import java.awt.Color;
+import java.awt.Color;
 
 // API help : https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
 
@@ -18,14 +19,13 @@ public class Lucky13 extends Robot
 		// After trying out your robot, try uncommenting the import at the top,
 		// and the next line:
 
-		// setColors(Color.red,Color.blue,Color.green); // body,gun,radar
+		 setColors(Color.blue,Color.red,Color.blue); // body,gun,radar
 
 		// Robot main loop
-		
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
 			ahead(100);
-			turnGunRight(360);
+			turnGunRight(360);	//also turns the radar right!
 			back(100);
 			turnGunRight(360);
 		}
@@ -36,7 +36,18 @@ public class Lucky13 extends Robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Replace the next line with any behavior you would like
-		fire(1);
+		if(e.getDistance() < 200)
+			fire(3);
+		else
+			fire(1);
+		//look for energy
+		/*
+		if(getEnergy() > 90)
+			fire(3);
+		else
+			fire(1);
+		*/
+	
 	}
 
 	/**
@@ -44,7 +55,9 @@ public class Lucky13 extends Robot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		// Replace the next line with any behavior you would like
-		back(10);
+		turnRight(45);
+		back(100);
+		
 	}
 	
 	/**
@@ -52,6 +65,14 @@ public class Lucky13 extends Robot
 	 */
 	public void onHitWall(HitWallEvent e) {
 		// Replace the next line with any behavior you would like
-		back(20);
+		//back(20);
 	}	
+	
+	public void onHitRobot(HitRobotEvent event) {
+       if (event.getBearing() > -90 && event.getBearing() <= 90) {
+           back(100);
+       } else {
+           ahead(100);
+       }
+   }
 }
