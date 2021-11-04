@@ -8,26 +8,45 @@ import java.awt.Color;
 /**
  * Lucky13 - a robot by (your name here)
  */
-public class Lucky13 extends AdvancedRobot
-{
+public class Lucky13 extends AdvancedRobot {
+
+	int enemy_robots; // Number of other robots in the game
+	static int corner = 0; // 0,1,2,3
+	double gun_turn_deg = 13;
+	int cnt_gun_turns;
+	String target_name = "";
 	/**
 	 * run: Lucky13's default behavior
 	 */
 	public void run() {
-		// Initialization of the robot should be put here
 
-		// After trying out your robot, try uncommenting the import at the top,
-		// and the next line:
-
-		 setColors(Color.blue,Color.red,Color.blue); // body,gun,radar
-
+		setColors(Color.blue,Color.red,Color.blue); // body,gun,radar
 		// Robot main loop
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
-			ahead(150);
-			turnGunRight(360);	//also turns the radar right!
-			turnRight(45);
-			turnGunRight(360);
+			enemy_robots = getOthers();
+			
+			//spinn phase
+			while(enemy_robots >= 6) {
+				setTurnRight(700);
+				// Start moving (and turning)
+				setAhead(100);
+				execute();
+			}
+			
+			//target phase
+			while (true) {
+				turnGunRight(gun_turn_deg);
+				cnt_gun_turns++;
+				// after 2 turns look left
+				if (cnt_gun_turns > 2) 
+					gun_turn_deg = -13;
+				if (cnt_gun_turns > 5)
+					gun_turn_deg = 13;
+				if (cnt_gun_turns > 11)
+					target_name = null;
+			}
+
 		}
 	}
 
@@ -36,22 +55,12 @@ public class Lucky13 extends AdvancedRobot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Replace the next line with any behavior you would like
-		if(e.getDistance() >= 800 && e.getDistance() <= 848.5)	//possible corner camper
-			fire(3);
-		else if(e.getDistance() < 50)
-			//fire(3);
-			if(getEnergy() > 90)
-				fire(3);
-			else
-				fire(1);
-		else if(e.getDistance() < 100)
+		if(e.getDistance() < 50)
 			fire(2);
-		else if(e.getDistance() < 200)
-			fire(1);
-		else if(e.getDistance() < 300)
-			fire(1);
+		else if(e.getDistance() < 100)
+			fire(1.5);
 		else
-			fire(0.5);
+			fire(1);
 	
 	}
 
