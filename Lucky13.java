@@ -67,9 +67,9 @@ public class Lucky13 extends AdvancedRobot  {
 		setTurnGunRight(robocode.util.Utils.normalRelativeAngleDegrees(e.getBearing() + getHeading() - getGunHeading()));
 		fire(3);
 		//ram
-       if (e.getBearing() > -90 && e.getBearing() <= 90) {
+      setTurnRight(e.getBearing());
            setAhead(100);
-       }
+       
 	   execute();
 	   
    }
