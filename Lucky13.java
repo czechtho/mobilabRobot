@@ -8,7 +8,7 @@ import java.awt.Color;
 /**
  * Lucky13 - a robot by (your name here)
  */
-public class Lucky13 extends Robot
+public class Lucky13 extends AdvancedRobot
 {
 	/**
 	 * run: Lucky13's default behavior
@@ -24,9 +24,9 @@ public class Lucky13 extends Robot
 		// Robot main loop
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
-			ahead(100);
+			ahead(150);
 			turnGunRight(360);	//also turns the radar right!
-			back(100);
+			turnRight(45);
 			turnGunRight(360);
 		}
 	}
@@ -36,17 +36,22 @@ public class Lucky13 extends Robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Replace the next line with any behavior you would like
-		if(e.getDistance() < 200)
+		if(e.getDistance() >= 800 && e.getDistance() <= 848.5)	//possible corner camper
 			fire(3);
-		else
+		else if(e.getDistance() < 50)
+			//fire(3);
+			if(getEnergy() > 90)
+				fire(3);
+			else
+				fire(1);
+		else if(e.getDistance() < 100)
+			fire(2);
+		else if(e.getDistance() < 200)
 			fire(1);
-		//look for energy
-		/*
-		if(getEnergy() > 90)
-			fire(3);
-		else
+		else if(e.getDistance() < 300)
 			fire(1);
-		*/
+		else
+			fire(0.5);
 	
 	}
 
@@ -56,7 +61,7 @@ public class Lucky13 extends Robot
 	public void onHitByBullet(HitByBulletEvent e) {
 		// Replace the next line with any behavior you would like
 		turnRight(45);
-		back(100);
+		setBack(100);
 		
 	}
 	
@@ -65,7 +70,10 @@ public class Lucky13 extends Robot
 	 */
 	public void onHitWall(HitWallEvent e) {
 		// Replace the next line with any behavior you would like
-		//back(20);
+		setTurnRight(90);
+  		setBack(100);
+		execute();
+		//move away from x/y point
 	}	
 	
 	public void onHitRobot(HitRobotEvent event) {
